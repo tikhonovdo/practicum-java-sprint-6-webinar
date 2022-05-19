@@ -1,6 +1,5 @@
 package order;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,19 +14,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OrderManagerTest {
 
-    @DisplayName("GIVEN a new instance or OrderManager " +
-            "WHEN a new order is created " +
-            "THEN number of saved orders is 1")
     @Test
-    void test1_creationOfNewOrderShouldIncrementOrderSize() {
+    void creationOfNewOrderShouldIncrementOrderSizeTest() {
         // Дано (Given)
         OrderManager orderManager = new OrderManager();
         // Совершаемое действие (When)
-        List<Item> items =
-                List.of(
-                        new Item("apple", 1),
-                        new Item("banana", 2)
-                );
+        List<Item> items = List.of(
+                new Item("apple", 1),
+                new Item("banana", 2)
+        );
         long price = 12345;
         double weight = 15.123;
         orderManager.createOrder(new Order(items, price, weight));
@@ -35,22 +30,16 @@ class OrderManagerTest {
         assertEquals(1, orderManager.getOrders().size());
     }
 
-    @DisplayName("GIVEN a new instance or OrderManager " +
-            "WHEN a new order is created " +
-            "THEN order creation method returns " +
-            "true if weight is allowed")
-    @MethodSource("test2MethodSource")
+    @MethodSource("orderWeightsSource")
     @ParameterizedTest(name = "{index} Create order with weight={0}")
-    void test2_orderWeightValidation(Double weight,
-                                     boolean isOrderCreated) {
+    void orderWeightValidationTest(Double weight, boolean isOrderCreated) {
         // Дано (Given)
         OrderManager orderManager = new OrderManager();
         // Совершаемое действие (When)
-        List<Item> items =
-                List.of(
-                        new Item("apple", 1),
-                        new Item("banana", 2)
-                );
+        List<Item> items = List.of(
+                new Item("apple", 1),
+                new Item("banana", 2)
+        );
         long price = 12345;
         boolean orderCreationResult =
                 orderManager.createOrder(
@@ -59,7 +48,7 @@ class OrderManagerTest {
         assertEquals(isOrderCreated, orderCreationResult);
     }
 
-    private Stream<Arguments> test2MethodSource() {
+    private Stream<Arguments> orderWeightsSource() {
         return Stream.of(
                 Arguments.of(-1.0, false),
                 Arguments.of(-0.001, false),
