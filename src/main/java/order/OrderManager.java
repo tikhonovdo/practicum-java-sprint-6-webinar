@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class OrderManager {
     private long lastUsedId = 0;
-    Map<Long, Order> orders = new HashMap<>();
+    private Map<Long, Order> orders = new HashMap<>();
 
     private long getNextId() {
         return lastUsedId++;
@@ -28,5 +28,14 @@ public class OrderManager {
 
     public Map<Long, Order> getOrders() {
         return orders;
+    }
+
+    /**
+     * method that cancels order
+     * @param orderId id of existing order
+     * @return true if cancellation succeeds
+     */
+    public boolean cancelOrder(long orderId) {
+        return orders.remove(orderId) != null;
     }
 }
