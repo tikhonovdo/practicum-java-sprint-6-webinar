@@ -35,7 +35,8 @@ class OrderManagerTest {
     @MethodSource("orderWeightsSource")
     @ParameterizedTest(name = "{index} Create order with weight={0}")
     @DisplayName("Order weights validation")
-    void orderWeightValidationTest(Double weight, boolean isOrderCreated) {
+    void orderWeightValidationTest(Double weight,
+                                   boolean expectedCreationResult) {
         // Дано (Given)
         OrderManager orderManager = new OrderManager();
         // Совершаемое действие (When)
@@ -44,11 +45,10 @@ class OrderManagerTest {
                 new Item("banana", 2)
         );
         long price = 12345;
-        boolean orderCreationResult =
-                orderManager.createOrder(
-                        new Order(items, price, weight));
+        boolean actualCreationResult =
+                orderManager.createOrder(new Order(items, price, weight));
         // Проверки (Then)
-        assertEquals(isOrderCreated, orderCreationResult);
+        assertEquals(expectedCreationResult, actualCreationResult);
     }
 
     @Test
