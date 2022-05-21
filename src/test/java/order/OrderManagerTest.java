@@ -2,7 +2,6 @@ package order;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -12,76 +11,79 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OrderManagerTest {
 
     @Test
     @DisplayName("Order creation should increment orders size")
-    void orderCreationShouldIncrementOrderSizeTest() {
-        // Дано (Given)
+    public void orderCreationShouldIncrementOrdersSize() {
+        // Given (дано)
         OrderManager orderManager = new OrderManager();
-        // Совершаемое действие (When)
-        List<Item> items = List.of(
-                new Item("apple", 1),
-                new Item("banana", 2)
-        );
-        long price = 12345;
-        double weight = 15.123;
-        orderManager.createOrder(new Order(items, price, weight));
-        // Проверки (Then)
+        Order order = new Order(List.of(
+                new Item("banana", 3),
+                new Item("pineapple", 1)
+        ), 500, 3.21);
+
+        // When (действие)
+        orderManager.createOrder(order);
+
+        // Then (проверки)
         assertEquals(1, orderManager.getOrders().size());
     }
 
-    @MethodSource("orderWeightsSource")
-    @ParameterizedTest(name = "{index} Create order with weight={0}")
     @DisplayName("Order weights validation")
-    void orderWeightValidationTest(Double weight,
-                                   boolean expectedCreationResult) {
-        // Дано (Given)
+    @ParameterizedTest(name = "{index} Order creation result with weight={0} is {1}")
+    @MethodSource("weightsStream")
+    public void orderWeightsValidation(Double weight, boolean expectedResult) {
+        // Given (дано)
         OrderManager orderManager = new OrderManager();
-        // Совершаемое действие (When)
-        List<Item> items = List.of(
-                new Item("apple", 1),
-                new Item("banana", 2)
-        );
-        long price = 12345;
-        boolean actualCreationResult =
-                orderManager.createOrder(new Order(items, price, weight));
-        // Проверки (Then)
-        assertEquals(expectedCreationResult, actualCreationResult);
+        Order order = new Order(List.of(
+                new Item("banana", 3),
+                new Item("pineapple", 1)
+        ), 500, weight);
+
+        // When (действие)
+        boolean actualResult = orderManager.createOrder(order);
+
+        // Then (проверки)
+        assertEquals(expectedResult, actualResult);
     }
+
 
     @Test
     @DisplayName("Order cancellation should decrement orders size")
-    void orderCancellationShouldDecrementOrderSizeTest() {
-        // Дано (Given)
+    public void orderCancellationShouldDecrementOrdersSize() {
+        // Given (дано)
         OrderManager orderManager = new OrderManager();
-        List<Item> items = List.of(
-                new Item("apple", 1),
-                new Item("banana", 2)
-        );
+        Order order1 = new Order(List.of(
+                new Item("banana", 3),
+                new Item("pineapple", 1)
+        ), 500, 3.21);
+        Order order2 = new Order(List.of(
+                new Item("pen", 1),
+                new Item("pineapple", 1)
+        ), 1200, 2.01);
 
-        // Совершаемое действие (When)
-        orderManager.createOrder(new Order(items, 1500, 12.3));
-        orderManager.createOrder(new Order(items, 900, 5.43));
-        boolean cancellationResult = orderManager.cancelOrder(1);
+        // When (действие)
+        orderManager.createOrder(order1);
+        orderManager.createOrder(order2);
+        orderManager.cancelOrder(order1.getId());
 
-        // Проверки (Then)
-        assertTrue(cancellationResult);
+        // Then (проверки)
         assertEquals(1, orderManager.getOrders().size());
     }
 
-    private Stream<Arguments> orderWeightsSource() {
+    private static Stream<Arguments> weightsStream() {
         return Stream.of(
                 Arguments.of(-1.0, false),
-                Arguments.of(-0.001, false),
+                Arguments.of(-0.01, false),
                 Arguments.of(0.0, false),
-                Arguments.of(0.001, true),
-                Arguments.of(5.0, true),
-                Arguments.of(19.999, true),
+                Arguments.of(0.01, true),
+                Arguments.of(10.0, true),
+                Arguments.of(19.99, true),
                 Arguments.of(20.0, true),
-                Arguments.of(20.001, false),
-                Arguments.of(25.0, false)
+                Arguments.of(20.01, false),
+                Arguments.of(21.0, false)
         );
     }
+
 }

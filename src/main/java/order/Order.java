@@ -8,7 +8,7 @@ public class Order {
     private final Date createdAt;
     private final List<Item> items;
     private final long price;
-    private final double weight;
+    private double weight;
 
     public Order(List<Item> items, long price, double weight) {
         this.id = null;

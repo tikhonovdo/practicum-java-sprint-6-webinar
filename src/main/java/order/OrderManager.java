@@ -17,8 +17,7 @@ public class OrderManager {
      * @return true if order is created
      */
     public boolean createOrder(Order order) {
-        if (order.getWeight() <= 0.0
-                || order.getWeight() > 20.0) {
+        if (order.getWeight() <= 0 || order.getWeight() > 20) {
             return false;
         }
         order.setId(getNextId());
@@ -35,7 +34,7 @@ public class OrderManager {
      * @param orderId id of existing order
      * @return true if cancellation succeeds
      */
-    public boolean cancelOrder(long orderId) {
+    public boolean cancelOrder(Long orderId) {
         return orders.remove(orderId) != null;
     }
 }
